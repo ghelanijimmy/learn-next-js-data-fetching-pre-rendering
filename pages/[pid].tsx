@@ -18,6 +18,12 @@ export async function getStaticProps(context: GetStaticPropsContext<{pid: string
 	const data = await getData<ProductData>('data', 'dummy-backend.json');
 	const product = data.products.find(product => product.id === productId);
 
+	if(!product) {
+		return {
+			notFound: true
+		}
+	}
+
 	return {
 		props: {
 			product
@@ -35,6 +41,6 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult<{pid: strin
 	});
 	return {
 		paths: [],
-		fallback: true // or 'blocking' if you want to wait for the page to be generated. False will return 404 if the page doesn't exist. True will return the page as soon as it's generated.
+		fallback: true // or 'blocking' if you want to wait for the page to be generated. False will return 404 if the page doesn't exist. False also relies on static content that you pass paths. True will return the page as soon as it's generated. True does not rely on static content that you pass paths. However, you need to handle the case where the page is not yet generated so props may be undefined
 	}
 }
